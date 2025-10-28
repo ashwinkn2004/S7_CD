@@ -1,74 +1,74 @@
-#include <stdio.h>
-#include <string.h>
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
 
-int get_terminal_index(char c, char* terminals, int n) {
-    for (int i = 0; i < n; i++) {
-        if (terminals[i] == c)
+int getIndex(char c, char *terminals, int limit){
+    for(int i = 0; i < limit; i++){
+        if(c == terminals[i]){
             return i;
+        }
     }
     return -1;
 }
 
-int main() {
-    char terminals[10], input[50], stack[50], table[10][10];
-    int i, j, n, stack_top = 0, inp_ptr = 0;
-
-    printf("Enter terminals (include $ as end marker): ");
+void main(){
+    char terminals[10], table[10][10], input[50], stack[10];
+    int top = 0, input_ptr = 0;
+    printf("Enter the terminals : ");
     scanf("%s", terminals);
-    n = strlen(terminals);
-
-    printf("Enter the precedence table (%d x %d):\n", n, n);
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < n; j++) {
+    
+    int limit = strlen(terminals);
+    
+    printf("Enter the precedence table : \n");
+    for(int i = 0; i < limit; i++){
+        for(int j = 0; j < limit; j++){
             scanf(" %c", &table[i][j]);
         }
     }
-
-    printf("Enter the input string: ");
+    
+    printf("Enter the input : ");
     scanf("%s", input);
-    strcat(input, "$"); // append end marker
-
+    
     stack[0] = '$';
     stack[1] = '\0';
-    stack_top = 0;
-
-    printf("\nSTACK\t\tINPUT\t\tACTION\n");
-    printf("------\t\t------\t\t------\n");
-
-    while (1) {
-        char stack_char = stack[stack_top];
-        char input_char = input[inp_ptr];
-        int stack_idx = get_terminal_index(stack_char, terminals, n);
-        int input_idx = get_terminal_index(input_char, terminals, n);
-
-        if (stack_idx == -1 || input_idx == -1) {
-            printf("Error: Unknown symbol '%c' or '%c'\n", stack_char, input_char);
+    
+    printf("STACK\t\tINPUT\t\tACTION\n");
+    printf("-----\t\t-----\t\t------\n");
+    
+    while(1){
+        char stack_chr = stack[top];
+        char input_chr = input[input_ptr];
+        int stack_idx = getIndex(stack_chr, terminals, limit);
+        int input_idx = getIndex(input_chr, terminals, limit);
+        
+        if(stack_idx == -1 || input_idx == -1){
+            printf("Error\n");
             break;
         }
-
-        if (stack_char == '$' && input_char == '$') {
-            printf("%-15s %-15s Accepted!\n", stack, input + inp_ptr);
+        
+        if(stack_chr == '$' && input_chr == '$'){
+            printf("%-15s %-15s Accepted!\n", stack, input + input_ptr);
             break;
         }
-
+        
         char reln = table[stack_idx][input_idx];
-        if (reln == '<' || reln == '=') {
-            printf("%-15s %-15s Shift %c\n", stack, input + inp_ptr, input_char);
-            stack[++stack_top] = input_char;
-            stack[stack_top + 1] = '\0';
-            inp_ptr++;
-        } else if (reln == '>') {
-            printf("%-15s %-15s Reduce\n", stack, input + inp_ptr);
-            if (stack_top == 0) {
-                printf("Error: Cannot reduce further\n");
+        if(reln == '<' || reln == '='){
+            printf("%-15s %-15s shift %c\n", stack, input + input_ptr, input_chr);
+            stack[++top] = input_chr;
+            stack[top+1] = '\0';
+            input_ptr++;
+        }
+        else if(reln == '>'){
+            printf("%-15s %-15s Reduce\n", stack, input + input_ptr);
+            if(top == 0){
+                printf("Nothing to reduce\n");
                 break;
             }
-            stack[stack_top--] = '\0';
-        } else {
-            printf("Error: Invalid relation between '%c' and '%c'\n", stack_char, input_char);
+            stack[top--] = '\0';
+        }
+        else{
+            printf("Error\n");
             break;
         }
     }
-
-    return 0;
 }
