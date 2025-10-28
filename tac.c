@@ -57,7 +57,7 @@ void tac(){
     }
     else{
       char a[max], b[max], t[max];
-      strcpy(b, tacstack[--top]);
+      strcpy(b, tacstack[top--]);
       strcpy(a, tacstack[top]);
       sprintf(t, "t%d", ++tcount);
       printf("%s = %s %c %s\n", t, a, c, b);
