@@ -29,7 +29,7 @@ void main(){
             arr[j] = '\0';
             j = 0;
             ungetc(ch, fp);
-            printf("%s - preprocessor directive\n", arr);
+            printf("\t%s - preprocessor directive\n", arr);
             strcpy(arr, "");
         }
         else if(ch == '<'){
@@ -40,7 +40,7 @@ void main(){
             arr[j++] = ch;
             arr[j] = '\0';
             j = 0;
-            printf("%s - library\n", arr);
+            printf("\t%s - library\n", arr);
             strcpy(arr, "");
         }
         else if(isalpha(ch)){
@@ -51,7 +51,7 @@ void main(){
             arr[j] = '\0';
             j = 0;
             ungetc(ch, fp);
-            printf("%s - %s\n", arr, isKeyword(arr) ? "keyword" : "identifier");
+            printf("\t%s - %s\n", arr, isKeyword(arr) ? "keyword" : "identifier");
             strcpy(arr, "");
         }
         else if(isdigit(ch)){
@@ -62,7 +62,7 @@ void main(){
             arr[j] = '\0';
             j = 0;
             ungetc(ch, fp);
-            printf("%s - Number\n", arr);
+            printf("\t%s - Number\n", arr);
             strcpy(arr, "");
         }
         else if(isspace(ch)){
@@ -70,13 +70,13 @@ void main(){
         }
         else{
             switch(ch){
-                case '=': printf("= - Relational operator\n"); break;
+                case '=': printf("\t= - Relational operator\n"); break;
                 case ';':
-                case ',': printf("%c - Separator\n", ch); break;
+                case ',': printf("\t%c - Separator\n", ch); break;
                 case '(':
                 case ')':
                 case '{':
-                case '}': printf("%c - Delimiter\n", ch); break;
+                case '}': printf("\t%c - Delimiter\n", ch); break;
             }
         }
     }
