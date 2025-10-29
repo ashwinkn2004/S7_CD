@@ -5,12 +5,12 @@
 
 FILE *fp;
 
-isKeyword(char *arr){
-    char keys[] = {
-        "int", "float", "void", "main", "return"
-    }
-    for(int i = 0; strlen(keys); i++){
-        if(*arr == keys[i]){
+int isKeyword(char *arr){
+    char *keys[] = {
+        "int","float","void","main","return"
+    };
+    for(int i = 0; i < 5; i++){
+        if(strcmp(arr, keys[i]) == 0){
             return 1;
         }
     }
@@ -23,22 +23,25 @@ void main(){
     while((ch = fgetc(fp)) != EOF){
         if(ch == '#'){
             arr[j++] = ch;
-            while(isalpha((ch = fgetch(fp)))){
+            while(isalpha((ch = fgetc(fp)))){
                 arr[j++] = ch;
             }
             arr[j] = '\0';
             j = 0;
             ungetc(ch, fp);
             printf("%s - preprocessor directive\n", arr);
+            strcpy(arr, "");
         }
-        else if((ch = fgetc(fp)) == '<'){
+        else if(ch == '<'){
             arr[j++] = ch;
             while((ch = fgetc(fp)) != '>'){
                 arr[j++] = ch;
             }
+            arr[j++] = ch;
             arr[j] = '\0';
             j = 0;
             printf("%s - library\n", arr);
+            strcpy(arr, "");
         }
         else if(isalpha(ch)){
             arr[j++] = ch;
@@ -49,8 +52,9 @@ void main(){
             j = 0;
             ungetc(ch, fp);
             printf("%s - %s\n", arr, isKeyword(arr) ? "keyword" : "identifier");
+            strcpy(arr, "");
         }
-        else if(isdigit(ch = fgetc(fp))){
+        else if(isdigit(ch)){
             arr[j++] = ch;
             while(isdigit(ch = fgetc(fp))){
                 arr[j++] = ch;
@@ -59,22 +63,20 @@ void main(){
             j = 0;
             ungetc(ch, fp);
             printf("%s - Number\n", arr);
+            strcpy(arr, "");
         }
-        else if(isspace(ch = fgetc(fp))){
+        else if(isspace(ch)){
             continue;
         }
         else{
-            switch(ch = fgetc(fp)){
-                case '+':
-                case '-':
-                case '*':
-                case '/':printf("%s - Operator\n", ch); break;
+            switch(ch){
+                case '=': printf("= - Relational operator\n"); break;
                 case ';':
-                case ',': printf("%s - Seperator\n", ch); break;
+                case ',': printf("%c - Separator\n", ch); break;
                 case '(':
                 case ')':
                 case '{':
-                case '}': printf("%s - Delimiter\n", ch); break;
+                case '}': printf("%c - Delimiter\n", ch); break;
             }
         }
     }
